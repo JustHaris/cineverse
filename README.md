@@ -7,7 +7,7 @@ CineVerse is a modern, SaaS-driven entertainment platform that combines cinemati
 ---
 
 ## 🚀 Live Demo
-👉 https://cineverse-justharis.vercel.app/
+👉 https://cineverse-seven-five.vercel.app/
 
 ---
 
