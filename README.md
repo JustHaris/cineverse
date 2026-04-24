@@ -1,93 +1,56 @@
 # CineVerse Intelligence Platform 🦇
 
-![CineVerse Banner](placeholder-for-hero-screenshot.png)
-
-CineVerse is a modern, SaaS-driven entertainment platform that combines cinematic content discovery with a powerful analytics engine. Built with performance, scalability, and user experience in mind, it delivers an app-like interface on the web with real-time data insights, immersive UI, and a structured content ecosystem.
+CineVerse is a sophisticated cinematic exploration and analytics platform designed to bridge the gap between media discovery and data-driven insights. Built on a modern full-stack architecture, CineVerse offers an immersive, app-like experience for users while providing administrators with robust content management and engagement tracking tools.
 
 ---
 
 ## 🚀 Live Demo
+<<<<<<< HEAD
 👉 https://cineverse-seven-five.vercel.app/
+=======
+Visit the live application: [cineverse-seven-five.vercel.app](https://cineverse-seven-five.vercel.app/)
+>>>>>>> ad6c097 (CineVerse v2: added footer + legal pages + docs update)
 
 ---
 
 ## ✨ Key Features
 
 ### 🎬 Cinematic Experience
-- **Immersive Mode**: Detail pages automatically hide navigation for a distraction-free viewing experience.
-- **Dynamic Poster Glow**: Extracts dominant colors from posters to create ambient UI lighting.
-- **Where to Watch**: Displays streaming providers (Netflix, etc.) using TMDB + JustWatch integration.
+- **Immersive Viewing**: Intelligent detail pages that automatically hide global navigation to focus on cinematic content.
+- **Dynamic UI Lighting**: Real-time extraction of dominant poster colors to generate ambient background lighting effects.
+- **Smart Routing**: Unified architecture handling both Movies and TV Shows with context-aware metadata.
+- **Interactive Search**: High-performance, debounced search system across the entire TMDB database.
 
----
+### 📊 Intelligence & Analytics
+- **Engagement Tracking**: Granular monitoring of user interactions, including watch activity, favorites, and watchlist additions.
+- **Admin Dashboard**: Secure control panel for monitoring platform health, user retention (DAU/WAU), and content performance.
+- **Content Control**: Tools for administrators to pin featured content or hide specific entries from the global feed.
 
-### ⚡ Performance & Data
-- **SWR Data Fetching**: Fast, cached, and optimized API-based architecture.
-- **Optimistic UI**: Instant updates for Watchlist, Favorites, and user actions.
-- **Edge Caching + ISR**: High-performance delivery using CDN and revalidation strategies.
-
----
-
-### 🧠 Intelligence & Analytics (Admin)
-- **Engagement Tracking**: Monitor clicks, favorites, and watch activity.
-- **Content Insights**: Identify trending and high-performing titles.
-- **User Analytics**: Track DAU/WAU and user behavior patterns.
-- **Content Control Panel**: Pin, hide, and manage platform-wide content.
-
----
-
-### 📱 Mobile-First UX
-- **Bottom Navigation**: Native-style tab bar for mobile devices.
-- **Gesture Navigation**: Swipe between main sections.
-- **Smooth Transitions**: App-like animations using Framer Motion.
-- **Responsive Design**: Optimized for all screen sizes.
-
----
-
-### ✍️ Content Ecosystem (SEO)
-- **Blog System**: Articles for movies, TV, and entertainment news.
-- **Categories**: Reviews, Guides, Analysis, News.
-- **Internal Linking**: Connects blogs with movie/TV pages.
-- **SEO Optimization**:
-  - Dynamic metadata
-  - JSON-LD schema (Movie, Article, Breadcrumb)
-
----
-
-### 🔥 Core Platform Features
-- **Watchlist, Favorites, History**
-- **Public Shared Watchlists**
-- **Interactive Cast Pages (Actor Profiles)**
-- **Movie + TV Smart Routing**
-- **Unified Search (Movies + TV)**
+### 📱 Premium UX & Performance
+- **Mobile-First Design**: Native-style bottom navigation and gesture-based interactions optimized for touch devices.
+- **SWR Data Fetching**: Advanced caching and revalidation strategy for near-instant data availability.
+- **Optimistic Updates**: Immediate UI feedback for user actions like favoriting or adding to watchlists.
+- **Optimized SEO**: Dynamic metadata generation and JSON-LD schema (Movie, Article, Breadcrumbs) for superior search visibility.
 
 ---
 
 ## 🛠 Tech Stack
 
 ### Frontend
-- Next.js 16 (App Router)
-- React 19
-- Tailwind CSS + Custom UI System
-- Framer Motion (animations)
+- **Framework**: Next.js 16 (App Router)
+- **Library**: React 19
+- **Styling**: Vanilla CSS + Tailwind Utility System
+- **Animations**: Framer Motion
 
-### Backend & Architecture
-- Next.js API Routes (Edge + Node)
-- Firebase Admin SDK (secure backend logic)
-- Middleware / Proxy (auth + rate limiting)
+### Backend & Infrastructure
+- **Server**: Next.js API Routes (Node.js & Edge Runtime)
+- **Security**: Firebase Admin SDK (Server-side token verification)
+- **Authentication**: Firebase Auth (Google & Email/Password)
 
-### Database & Auth
-- Firebase Authentication
-- Google Cloud Firestore (NoSQL)
-
-### Data & APIs
-- TMDB API (Movies & TV)
-- GNews API (Blogs / News)
-- JustWatch (via TMDB providers)
-
-### Performance
-- SWR (Stale-While-Revalidate)
-- ISR (Incremental Static Regeneration)
-- CDN Edge Caching
+### Data Layer
+- **Database**: Cloud Firestore (NoSQL)
+- **Media API**: The Movie Database (TMDB)
+- **News API**: GNews (Integrated Blog System)
 
 ---
 
@@ -103,19 +66,71 @@ CineVerse is a modern, SaaS-driven entertainment platform that combines cinemati
 
 ---
 
-## 💻 Running Locally
 
-### Prerequisites
-- Node.js 18+
-- Firebase Project (Auth + Firestore)
-- TMDB API Key
-- GNews API Key
+## 📂 Project Structure
+
+```bash
+├── app/                  # App Router: Pages & API Endpoints
+├── components/           # Modular UI Components (Layout, Movie, Analytics)
+├── context/              # React Context Providers (Auth, UI State)
+├── hooks/                # Custom React Hooks (useAuth, useIsAdmin)
+├── lib/                  # Library Configurations (Firebase, TMDB, Utils)
+├── services/             # Server-side Business Logic & SEO Generators
+└── public/               # Static Assets & Global Styles
+```
 
 ---
 
-### Installation
+## 💻 Local Development
 
-1. Clone the repository:
+### 1. Prerequisites
+- Node.js 18 or higher
+- A Firebase Project (with Auth and Firestore enabled)
+- TMDB API Key
+
+### 2. Setup
 ```bash
+# Clone the repository
 git clone https://github.com/JustHaris/cineverse.git
 cd cineverse
+<<<<<<< HEAD
+=======
+
+# Install dependencies
+npm install
+
+# Run the development server
+npm run dev
+```
+
+### 3. Environment Variables
+Create a `.env.local` file in the root directory and populate it with your credentials:
+```env
+# TMDB API
+NEXT_PUBLIC_TMDB_API_KEY=your_key_here
+
+# Firebase Client
+NEXT_PUBLIC_FIREBASE_API_KEY=...
+NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=...
+# ... (see DEPLOYMENT_GUIDE.md for full list)
+
+# Firebase Admin (Secret)
+FIREBASE_CLIENT_EMAIL=...
+FIREBASE_PRIVATE_KEY=...
+ADMIN_EMAILS=yourname@example.com
+```
+
+---
+
+## 🚀 Deployment
+CineVerse is optimized for deployment on **Vercel**. For a detailed step-by-step production guide, refer to [DEPLOYMENT_GUIDE.md](./DEPLOYMENT_GUIDE.md).
+
+---
+
+## 👤 Author
+**Haris Khan**  
+GitHub: [@JustHaris](https://github.com/JustHaris)
+
+---
+*CineVerse Intelligence Platform — Professional Cinematic SaaS Architecture.*
+>>>>>>> ad6c097 (CineVerse v2: added footer + legal pages + docs update)

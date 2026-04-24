@@ -1,12 +1,13 @@
 'use client'
 
 import { useState } from 'react'
-import { User, LogOut, Settings, History, Heart, X, Save, Bell, Shield, Palette, Share2, Copy, Check, MessageCircle, Send, Film, Tv } from 'lucide-react'
+import Link from 'next/link'
+import { User, LogOut, Settings, History, Heart, X, Save, Bell, Shield, Palette, Share2, Copy, Check, MessageCircle, Send, Film, Tv, Star } from 'lucide-react'
 import { useAuth } from '@/hooks/useAuth'
 import { auth } from '@/lib/firebase'
 import { signOut, updateProfile } from 'firebase/auth'
 import { useRouter } from 'next/navigation'
-import { useWatchlist, useHistory, useFavorites } from '@/lib/firestore'
+import { useWatchlist, useHistory, useFavorites, useUserReviews } from '@/lib/firestore'
 import MovieCard from '@/components/movie/MovieCard'
 
 export default function ProfilePage() {
@@ -24,6 +25,7 @@ export default function ProfilePage() {
   const { watchlist, loading: watchlistLoading } = useWatchlist(user?.uid)
   const { history, loading: historyLoading } = useHistory(user?.uid)
   const { favorites, loading: favoritesLoading } = useFavorites(user?.uid)
+  const { reviews, loading: reviewsLoading } = useUserReviews(user?.uid)
 
   const handleLogout = async () => {
     await signOut(auth)
@@ -297,7 +299,7 @@ export default function ProfilePage() {
       </div>
 
       <div className="space-y-12">
-        <div>
+        <div id="shared-lists">
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-3">
               <Heart className="w-6 h-6 text-primary" />
@@ -403,6 +405,55 @@ export default function ProfilePage() {
           ) : (
             <div className="glass p-8 rounded-2xl text-center border border-white/5">
               <p className="text-gray-400">You haven't added any favorites yet.</p>
+            </div>
+          )}
+        </div>
+
+        <div id="reviews">
+          <div className="flex items-center gap-3 mb-6">
+            <MessageCircle className="w-6 h-6 text-primary" />
+            <h2 className="text-2xl font-bold text-white">My Reviews</h2>
+          </div>
+          
+          {reviewsLoading ? (
+            <div className="space-y-4">
+              <div className="h-24 w-full bg-white/5 animate-pulse rounded-2xl"></div>
+              <div className="h-24 w-full bg-white/5 animate-pulse rounded-2xl"></div>
+            </div>
+          ) : reviews.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {reviews.map(review => (
+                <div key={review.id} className="glass p-5 rounded-2xl border border-white/5 hover:border-white/10 transition-colors group">
+                  <div className="flex justify-between items-start mb-3">
+                    <div className="flex gap-1">
+                      {[1,2,3,4,5].map(star => (
+                        <Star key={star} className={`w-3.5 h-3.5 ${star <= review.rating ? 'fill-primary text-primary' : 'text-gray-600'}`} />
+                      ))}
+                    </div>
+                    <span className="text-[10px] text-gray-500 font-medium uppercase tracking-wider">
+                      {review.createdAt?.toDate ? review.createdAt.toDate().toLocaleDateString() : 'Recent'}
+                    </span>
+                  </div>
+                  <p className="text-sm text-gray-300 mb-4 line-clamp-3 leading-relaxed italic">"{review.text}"</p>
+                  <div className="flex items-center justify-between pt-3 border-t border-white/5">
+                    <span className="text-[10px] text-gray-500 font-bold uppercase tracking-widest">
+                      {review.movieId ? `ID: ${review.movieId}` : 'Legacy Review'}
+                    </span>
+                    {review.movieId && (
+                      <Link 
+                        href={`/${review.mediaType || 'movie'}/${review.movieId}`}
+                        className="text-[10px] text-primary font-bold uppercase tracking-widest hover:underline flex items-center gap-1"
+                      >
+                        View {review.mediaType === 'tv' ? 'Show' : 'Movie'} <Send className="w-2.5 h-2.5" />
+                      </Link>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="glass p-8 rounded-2xl text-center border border-white/5">
+              <p className="text-gray-400">Your movie reviews and ratings will appear here. Start sharing your thoughts on movies you've watched!</p>
             </div>
           )}
         </div>

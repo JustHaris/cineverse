@@ -33,5 +33,10 @@ service cloud.firestore {
       // Only the author can delete their review
       allow delete: if request.auth != null && resource.data.userId == request.auth.uid;
     }
+
+    // Allow collection group queries for reviews (for user-centric fetching)
+    match /{path=**}/reviews/{reviewId} {
+      allow read: if request.auth != null && resource.data.userId == request.auth.uid;
+    }
   }
 }

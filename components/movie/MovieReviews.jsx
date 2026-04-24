@@ -6,7 +6,7 @@ import { useAuth } from '@/hooks/useAuth'
 import { useReviews, postReview } from '@/lib/firestore'
 import { useRouter } from 'next/navigation'
 
-export default function MovieReviews({ movieId }) {
+export default function MovieReviews({ movieId, mediaType = 'movie' }) {
   const { user } = useAuth()
   const reviews = useReviews(movieId)
   const router = useRouter()
@@ -23,7 +23,7 @@ export default function MovieReviews({ movieId }) {
     setIsSubmitting(true)
     setError('')
     try {
-      await postReview(movieId, user.uid, user.displayName, rating, text)
+      await postReview(movieId, user.uid, user.displayName, rating, text, mediaType)
       setText('')
       setRating(5)
     } catch (err) {

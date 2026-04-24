@@ -1,103 +1,91 @@
-# CineVerse - Vercel Deployment & Firebase Production Guide
+# CineVerse Deployment & Production Guide 🚀
 
-Follow these exact steps to push your local CineVerse code to the internet using Vercel.
+This guide provides a comprehensive, step-by-step technical walkthrough for deploying the CineVerse Intelligence Platform to a production environment using Vercel and Firebase.
 
 ---
 
-## Part 1: GitHub Setup
-1. Go to your local terminal inside the CineVerse folder.
-2. Initialize and commit your code:
+## 1. Repository Configuration
+Ensure your local environment is synchronized and committed before proceeding.
+1. Initialize and commit your code:
    ```bash
    git add .
-   git commit -m "Initial commit - CineVerse ready for production"
+   git commit -m "chore: prepare for production deployment"
    ```
-3. Go to [GitHub.com](https://github.com), create a new repository named `cineverse`.
-4. Copy the "Push an existing repository from the command line" code and run it in your terminal:
+2. Create a new repository on [GitHub](https://github.com/JustHaris/cineverse) and push your branch:
    ```bash
+   git remote add origin https://github.com/JustHaris/cineverse.git
    git branch -M main
-   git remote add origin https://github.com/YOUR_USERNAME/cineverse.git
    git push -u origin main
    ```
 
 ---
 
-## Part 2: Firebase Admin SDK Setup (CRITICAL)
-For the Admin Panel to work in production, you must generate a Private Key.
+## 2. Infrastructure Setup (Firebase)
+CineVerse utilizes both the Firebase Client SDK and the Admin SDK for secure operations.
 
-1. Go to the [Firebase Console](https://console.firebase.google.com).
-2. Click the **Settings (Gear icon)** -> **Project Settings**.
-3. Go to the **Service accounts** tab.
-4. Click **Generate new private key**. A `.json` file will download.
-5. Open this `.json` file. You will need the `client_email` and `private_key` values for the next step.
+### Generate Admin SDK Credentials
+1. Navigate to the [Firebase Console](https://console.firebase.google.com).
+2. Go to **Project Settings** > **Service Accounts**.
+3. Select **Node.js** and click **Generate new private key**.
+4. Securely store the downloaded JSON file; you will need the `client_email` and `private_key` values for Vercel.
 
----
-
-## Part 3: Vercel Deployment
-1. Go to [Vercel.com](https://vercel.com) and log in with your GitHub account.
-2. Click **Add New Project**.
-3. Import your `cineverse` repository.
-4. **Environment Variables**: Open your local `.env.local` file. You must copy every variable into the Vercel dashboard:
-
-   **Public Variables (Client-side):**
-   - `NEXT_PUBLIC_TMDB_API_KEY`: Your TMDB API Key.
-   - `NEXT_PUBLIC_FIREBASE_API_KEY`
-   - `NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN`
-   - `NEXT_PUBLIC_FIREBASE_PROJECT_ID`
-   - `NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET`
-   - `NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID`
-   - `NEXT_PUBLIC_FIREBASE_APP_ID`
-
-   **Secret Variables (Server-side):**
-   - `FIREBASE_CLIENT_EMAIL`: Found in the `.json` file from Part 2.
-   - `FIREBASE_PRIVATE_KEY`: Found in the `.json` file from Part 2. (Copy the whole string, including `-----BEGIN PRIVATE KEY-----`).
-   - `ADMIN_EMAILS`: A comma-separated list of emails allowed to access the admin panel (e.g., `yourname@gmail.com,admin@cineverse.com`).
-
-5. Click **Deploy**. Vercel will build your code and provide a live URL.
-
----
-
-## Part 4: Firebase Production Configuration
-Now that your app is live, you must tell Firebase to trust your Vercel URL.
-
-### 1. Authentication Authorized Domains
-1. In Firebase Console, go to **Authentication** -> **Settings** -> **Authorized domains**.
-2. Click **Add domain** and paste your Vercel URL (e.g., `cineverse-xyz.vercel.app`). Do NOT include `https://`.
-
-### 2. Firestore Security Rules
-1. Go to **Firestore Database** -> **Rules**.
-2. Ensure your rules allow for user-specific data and public reviews, while protecting the admin collections:
+### Configure Security Rules
+Navigate to **Firestore Database** > **Rules** and deploy the following configuration:
 ```javascript
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    // User-specific data
     match /users/{userId}/{collectionName}/{document=**} {
       allow read, write: if request.auth != null && request.auth.uid == userId;
     }
-    
-    // Movie Reviews
     match /movies/{movieId}/reviews/{reviewId} {
       allow read: if true;
-      allow create, update: if request.auth != null 
-                            && request.resource.data.rating >= 1 
-                            && request.resource.data.rating <= 5;
+      allow create, update: if request.auth != null && request.resource.data.rating >= 1;
       allow delete: if request.auth != null && request.auth.uid == resource.data.userId;
     }
-    
-    // Admin Control collections (Server-side only via Admin SDK)
-    match /admin_pins/{document=**} {
-      allow read: if true;
-      allow write: if false; // Only Admin SDK can write
+    match /{path=**}/reviews/{reviewId} {
+      allow read: if request.auth != null && resource.data.userId == request.auth.uid;
     }
-    match /admin_hidden/{document=**} {
-      allow read: if true;
-      allow write: if false; // Only Admin SDK can write
-    }
+    match /admin_pins/{document=**} { allow read: if true; allow write: if false; }
   }
 }
 ```
-3. Click **Publish**.
 
 ---
 
-Congratulations! CineVerse is now live, secure, and ready for your users.
+## 3. Vercel Deployment
+1. Connect your GitHub repository to [Vercel](https://vercel.com).
+2. Populate the following **Environment Variables**:
+
+| Variable | Description |
+| :--- | :--- |
+| `NEXT_PUBLIC_TMDB_API_KEY` | API Key from The Movie Database. |
+| `FIREBASE_CLIENT_EMAIL` | From the Service Account JSON. |
+| `FIREBASE_PRIVATE_KEY` | From the Service Account JSON. |
+| `ADMIN_EMAILS` | Comma-separated list (e.g., `admin@cineverse.com`). |
+| `NEXT_PUBLIC_FIREBASE_*` | All standard Firebase client configuration keys. |
+
+---
+
+## 4. Common Troubleshooting
+### 🛑 Authentication Errors (Invalid API Key)
+- Ensure the production URL is added to **Firebase Authentication** > **Settings** > **Authorized Domains**.
+- Verify that `NEXT_PUBLIC_FIREBASE_API_KEY` matches the key in your Firebase project settings.
+
+### 🛑 Build Failures
+- Build failures are frequently caused by missing Environment Variables. Ensure all keys from `.env.local` are replicated in the Vercel dashboard.
+- If errors persist, verify that the `FIREBASE_PRIVATE_KEY` includes the full string (including headers/footers).
+
+### 🛑 Profile Review Errors
+- If the "My Reviews" section fails to load, ensure you have created the **Collection Group Index** in Firestore for the `reviews` collection (Fields: `userId` ASC, `createdAt` DESC).
+
+---
+
+## 5. Maintenance & Updates
+To deploy updates, simply push your changes to the `main` branch. Vercel will automatically trigger a production build.
+```bash
+git push origin main
+```
+
+---
+*Built and maintained by [Haris Khan](https://github.com/JustHaris).*

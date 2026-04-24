@@ -43,7 +43,7 @@ export default async function Home() {
     <div className="flex flex-col min-h-screen pb-20">
       <HeroBanner movie={featuredMovie} />
       
-      <div className="mt-[-100px] z-20 relative space-y-12">
+      <div className="mt-[-40px] md:mt-[-100px] z-20 relative space-y-12">
         {pinned.length > 0 && <RowSlider title="Featured Picks" movies={pinned} />}
         {trendingList.length > 0 && <RowSlider title="Trending Now" movies={trendingList} />}
         {filteredPopular.length > 0 && <RowSlider title="Continue Watching" movies={filteredPopular.slice(0, 5)} />}

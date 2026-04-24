@@ -83,7 +83,7 @@ export default async function TvDetails({ params }) {
         <X className="w-5 h-5" />
       </Link>
 
-      <div className="relative h-[60vh] md:h-[70vh] w-full">
+      <div className="relative min-h-[70vh] md:h-[70vh] w-full flex flex-col justify-end">
         <div className="absolute inset-0 z-0">
           <PosterGlow imageUrl={posterUrl} />
           {backdropUrl && (
@@ -99,7 +99,7 @@ export default async function TvDetails({ params }) {
           <div className="absolute inset-0 bg-gradient-to-t from-background via-background/80 to-transparent" />
         </div>
         
-        <div className="absolute bottom-0 left-0 w-full p-8 md:p-16 flex flex-col md:flex-row gap-4 md:gap-8 items-center md:items-end z-10">
+        <div className="relative w-full p-8 md:p-16 flex flex-col md:flex-row gap-4 md:gap-8 items-center md:items-end z-10 pt-20 md:pt-0">
           <div className="block w-32 h-48 md:w-64 md:h-96 relative rounded-2xl overflow-hidden shrink-0 shadow-2xl glow-box border border-white/10">
             {posterUrl && (
               <Image src={posterUrl} alt={movie.name || movie.title || 'Poster'} fill className="object-cover" sizes="(max-width: 768px) 128px, 256px" />
@@ -247,7 +247,7 @@ export default async function TvDetails({ params }) {
         </div>
 
         <div className="space-y-8 lg:pt-12">
-          <MovieReviews movieId={movie.id} />
+          <MovieReviews movieId={movie.id} mediaType="tv" />
         </div>
       </div>
     </div>

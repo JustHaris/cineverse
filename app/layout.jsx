@@ -4,6 +4,7 @@ import { Inter } from 'next/font/google'
 import Sidebar from '@/components/layout/Sidebar'
 import Navbar from '@/components/layout/Navbar'
 import BottomNav from '@/components/layout/BottomNav'
+import Footer from '@/components/layout/Footer'
 import PageTransition from '@/components/layout/PageTransition'
 import AnalyticsTracker from '@/components/analytics/AnalyticsTracker'
 import { SWRConfig } from 'swr'
@@ -59,11 +60,12 @@ export default function RootLayout({ children }) {
                 dedupingInterval: 600000,
               }}>
                 <MobileAppContainer>
-                  <main className="md:ml-64 pt-20 md:pt-0 min-h-screen pb-24 md:pb-0">
-                    <PageTransition>
-                      {children}
-                    </PageTransition>
-                  </main>
+                    <main className="md:ml-64 pt-20 md:pt-0 min-h-screen pb-24 md:pb-0">
+                      <PageTransition>
+                        {children}
+                      </PageTransition>
+                      <Footer />
+                    </main>
                 </MobileAppContainer>
               </SWRConfig>
             </div>
