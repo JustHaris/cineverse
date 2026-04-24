@@ -1,0 +1,37 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // User data (Watchlist, Favorites, History)
+    match /users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+      
+      match /watchlist/{movieId} {
+        allow read, write: if request.auth != null && request.auth.uid == userId;
+      }
+      
+      match /favorites/{movieId} {
+        allow read, write: if request.auth != null && request.auth.uid == userId;
+      }
+      
+      match /history/{movieId} {
+        allow read, write: if request.auth != null && request.auth.uid == userId;
+      }
+    }
+    
+    // Movie Reviews
+    match /movies/{movieId}/reviews/{reviewId} {
+      // Anyone can read reviews
+      allow read: if true;
+      
+      // Only authenticated users can create/update reviews
+      allow create, update: if request.auth != null 
+                            && request.resource.data.userId == request.auth.uid
+                            && request.resource.data.rating >= 1 
+                            && request.resource.data.rating <= 5;
+                            
+      // Only the author can delete their review
+      allow delete: if request.auth != null && resource.data.userId == request.auth.uid;
+    }
+  }
+}
